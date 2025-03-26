@@ -3,19 +3,18 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-/**
- * Books Controller
- *
- * @property \App\Model\Table\BooksTable $Books
- * @method \App\Model\Entity\Book[]|\Cake\Datasource\ResultSetInterface paginate($object = null, array $settings = [])
- */
 class BooksController extends AppController
 {
-    /**
-     * Index method
-     *
-     * @return \Cake\Http\Response|null|void Renders view
-     */
+    public function initialize(): void
+    {
+        parent::initialize();
+        $this->loadModel('Books');
+        $this->loadModel('Publishers');
+        $this->loadModel('Authors');
+        $this->loadComponent('Flash');
+    }
+
+    
     public function index()
     {
         $this->paginate = [
@@ -26,13 +25,7 @@ class BooksController extends AppController
         $this->set(compact('books'));
     }
 
-    /**
-     * View method
-     *
-     * @param string|null $id Book id.
-     * @return \Cake\Http\Response|null|void Renders view
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     */
+ 
     public function view($id = null)
     {
         $book = $this->Books->get($id, [
@@ -42,11 +35,6 @@ class BooksController extends AppController
         $this->set(compact('book'));
     }
 
-    /**
-     * Add method
-     *
-     * @return \Cake\Http\Response|null|void Redirects on successful add, renders view otherwise.
-     */
     public function add()
     {
         $book = $this->Books->newEmptyEntity();
@@ -60,17 +48,12 @@ class BooksController extends AppController
             $this->Flash->error(__('The book could not be saved. Please, try again.'));
         }
         $publishers = $this->Books->Publishers->find('list', ['limit' => 200])->all();
+        
         $authors = $this->Books->Authors->find('list', ['limit' => 200])->all();
         $this->set(compact('book', 'publishers', 'authors'));
     }
 
-    /**
-     * Edit method
-     *
-     * @param string|null $id Book id.
-     * @return \Cake\Http\Response|null|void Redirects on successful edit, renders view otherwise.
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     */
+  
     public function edit($id = null)
     {
         $book = $this->Books->get($id, [
@@ -86,17 +69,12 @@ class BooksController extends AppController
             $this->Flash->error(__('The book could not be saved. Please, try again.'));
         }
         $publishers = $this->Books->Publishers->find('list', ['limit' => 200])->all();
+        print_r($publishers); exit;
         $authors = $this->Books->Authors->find('list', ['limit' => 200])->all();
         $this->set(compact('book', 'publishers', 'authors'));
     }
 
-    /**
-     * Delete method
-     *
-     * @param string|null $id Book id.
-     * @return \Cake\Http\Response|null|void Redirects to index.
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     */
+
     public function delete($id = null)
     {
         $this->request->allowMethod(['post', 'delete']);
